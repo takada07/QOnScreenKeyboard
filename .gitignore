@@ -1,0 +1,8 @@
+modules
+*~
+*.swp
+*.so*
+ui_*
+moc*
+Makefile
+keybtest
