@@ -2,6 +2,7 @@ modules
 *~
 *.swp
 *.so*
+*.o
 ui_*
 moc*
 Makefile
