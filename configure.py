@@ -67,7 +67,7 @@ if __name__=="__main__":
         help="Add path to the built QOnScreenKeyboard library. This will disable building it",
     )
     args=parser.parse_args()
-    if args.lib_path != "":
+    if not args.lib_path:
         qmake_exe=args.qmake
         if not qmake_exe.endswith('qmake'):
             qmake_exe=os.path.join(qmake_exe,'qmake')
@@ -85,7 +85,7 @@ if __name__=="__main__":
 
     sip_args=args.sip_extras
     rundir=os.path.dirname(sys.argv[0])
-    if rundir == "":
+    if not rundir:
         rundir="."
     pyconfig=HostPythonConfiguration()
     py_sip_dir=os.path.join(pyconfig.data_dir, 'sip', 'PyQt5')
@@ -94,7 +94,7 @@ if __name__=="__main__":
     qtconfig=TargetQtConfiguration(qmake_exe)
 
     inc_dir=os.path.abspath(os.path.join(rundir,"src"))
-    if args.lib_path == "":
+    if not args.lib_path:
         lib_dir=inc_dir
     else:
         lib_dir=args.lib_path
@@ -166,7 +166,7 @@ if __name__=="__main__":
         makefile.extra_libs+=['Qt5Core','Qt5Gui','Qt5Widgets']
     
     makefile.generate()
-    if args.lib_path == "":
+    if not args.lib_path:
         sipconfig.ParentMakefile(
             configuration = config,
             subdirs = ["src", output_dir],
