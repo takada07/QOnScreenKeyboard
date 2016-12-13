@@ -16,4 +16,4 @@ make install
 To build only python bindings (in case you have C++ bindings 
 already installed) run:
 
-./configure.py --lib-path <path to libQOnscreenKeyboard.so>
+./configure.py --lib-path [path to libQOnscreenKeyboard.so]
