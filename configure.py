@@ -1,3 +1,4 @@
+#!/bin/env python3
 from PyQt5.QtCore import PYQT_CONFIGURATION as pyqt_config
 from distutils import sysconfig
 import os, sipconfig, sys
@@ -43,7 +44,7 @@ class TargetQtConfiguration(object):
 if __name__=="__main__":
     from argparse import ArgumentParser
 
-    parser=ArgumentParser(description="Configure PyMyLabel module.")
+    parser=ArgumentParser(description="Configure QOnScreenKeyboard library.")
     parser.add_argument(
         '-q', '--qmake',
         dest="qmake",
@@ -58,38 +59,50 @@ if __name__=="__main__":
         default="",
         help="Extra arguments to sip"
     )
+    parser.add_argument(
+        '--lib-path',
+        dest="lib_path",
+        type=str,
+        default="",
+        help="Add path to the built QOnScreenKeyboard library. This will disable building it",
+    )
     args=parser.parse_args()
+    if args.lib_path != "":
+        qmake_exe=args.qmake
+        if not qmake_exe.endswith('qmake'):
+            qmake_exe=os.path.join(qmake_exe,'qmake')
 
-    qmake_exe=args.qmake
-    if not qmake_exe.endswith('qmake'):
-        qmake_exe=os.path.join(qmake_exe,'qmake')
-
-    if os.system(' '.join([qmake_exe, '-v']))!=0:
+        if os.system(' '.join([qmake_exe, '-v']))!=0:
         
-        if sys.platform=='win32':
-            print("Make sure you have a working Qt qmake on your PATH.")
-        else:
-            print(
-                "Use the --qmake argument to explicitly specify a "
-                "working Qt qmake."
-            )
-        exit(1)
+            if sys.platform=='win32':
+                print("Make sure you have a working Qt qmake on your PATH.")
+            else:
+                print(
+                    "Use the --qmake argument to explicitly specify a "
+                    "working Qt qmake."
+                )
+            exit(1)
 
     sip_args=args.sip_extras
-
+    rundir=os.path.dirname(sys.argv[0])
+    if rundir == "":
+        rundir="."
     pyconfig=HostPythonConfiguration()
     py_sip_dir=os.path.join(pyconfig.data_dir, 'sip', 'PyQt5')
     sip_inc_dir=pyconfig.venv_inc_dir
 
     qtconfig=TargetQtConfiguration(qmake_exe)
 
-    inc_dir=os.path.abspath(os.path.join(".","src"))
-    lib_dir=inc_dir
+    inc_dir=os.path.abspath(os.path.join(rundir,"src"))
+    if args.lib_path == "":
+        lib_dir=inc_dir
+    else:
+        lib_dir=args.lib_path
     dest_pkg_dir=site.getsitepackages()[0] + "/PyQOnScreenKeyboard"
 
-    sip_files_dir=os.path.abspath(os.path.join(".","sip"))
-    output_dir =os.path.abspath(os.path.join(".", "modules"))
-    build_file="PyQOnScreenKeyboard.sbf"
+    sip_files_dir = os.path.abspath(os.path.join(rundir,"sip"))
+    output_dir = os.path.abspath(os.path.join(".", "modules"))
+    build_file = "PyQOnScreenKeyboard.sbf"
     build_path = os.path.join(output_dir, build_file)
       
     if not os.path.exists(output_dir): os.mkdir(output_dir)
@@ -126,7 +139,7 @@ if __name__=="__main__":
 
     makefile.extra_defines+=['MYQONSCREENKEYBOARD_LIBRARY','QT_CORE_LIB', 'QT_GUI_LIB', 'QT_WIDGETS_LIB']
     makefile.extra_include_dirs+=[os.path.abspath(inc_dir), qtconfig.QT_INSTALL_HEADERS]
-    makefile.extra_lib_dirs+=[qtconfig.QT_INSTALL_LIBS, os.path.join('..','src')]
+    makefile.extra_lib_dirs+=[qtconfig.QT_INSTALL_LIBS, os.path.join(rundir,'src')]
     makefile.extra_libs+=['QOnScreenKeyboard']
 
     if sys.platform=='linux':
@@ -149,20 +162,23 @@ if __name__=="__main__":
             os.path.join(qtconfig.QT_INSTALL_HEADERS,'QtGui'),
             os.path.join(qtconfig.QT_INSTALL_HEADERS, "QtWidgets"),
         ]
-        makefile.extra_lib_dirs+=[os.path.join('..','src','release')]
+        makefile.extra_lib_dirs+=[os.path.join(rundir,'src','release')]
         makefile.extra_libs+=['Qt5Core','Qt5Gui','Qt5Widgets']
     
     makefile.generate()
+    if args.lib_path == "":
+        sipconfig.ParentMakefile(
+            configuration = config,
+            subdirs = ["src", output_dir],
+        ).generate()
 
-    sipconfig.ParentMakefile(
-        configuration = config,
-        subdirs = ["src", output_dir],
-    ).generate()
-
-    os.chdir("src")    
-    qmake_cmd=qmake_exe
-    if sys.platform=="win32": qmake_cmd+=" -spec win32-msvc2010"
-    print()
-    print(qmake_cmd)
-    os.system(qmake_cmd)
+        os.chdir("src")    
+        qmake_cmd=qmake_exe
+        if sys.platform=="win32": qmake_cmd+=" -spec win32-msvc2010"
+        os.system(qmake_cmd)
+    else:
+        sipconfig.ParentMakefile(
+            configuration = config,
+            subdirs = [output_dir],
+        ).generate()
     sys.exit()
