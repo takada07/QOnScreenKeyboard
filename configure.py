@@ -65,13 +65,6 @@ if __name__=="__main__":
         default="",
         help="Add path to the built QOnScreenKeyboard library. This will disable building it",
     )
-    parser.add_argument(
-        '--site-packages',
-        dest='site_packages',
-        type=str,
-        default="",
-        help="Specify path to Python site-packages, where the module will be installed"
-    )
 
     args=parser.parse_args()
 
@@ -106,10 +99,7 @@ if __name__=="__main__":
     else:
         lib_dir=args.lib_path
 
-    if not args.site_packages:
-        site_packages = site.getsitepackages()[0]
-    else:
-        site_packages = args.site_packages
+    site_packages = site.getsitepackages()[0]
 
     dest_pkg_dir = site_packages + "/PyQOnScreenKeyboard"
 
@@ -143,11 +133,14 @@ if __name__=="__main__":
     print(cmd)
     if os.system(cmd)!=0: sys.exit(1)
 
+    python_dir = os.path.abspath(os.path.join(rundir,"python"))
+
     makefile=sipconfig.SIPModuleMakefile(
         config,
         build_file,
         dir=output_dir,
-        install_dir=dest_pkg_dir
+        install_dir=dest_pkg_dir,
+        installs=[(os.path.join(python_dir, '__init__.py'), dest_pkg_dir,)],
     )
 
     makefile.extra_defines+=['MYQONSCREENKEYBOARD_LIBRARY','QT_CORE_LIB', 'QT_GUI_LIB', 'QT_WIDGETS_LIB']
