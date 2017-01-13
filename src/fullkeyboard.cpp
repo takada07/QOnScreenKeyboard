@@ -209,8 +209,11 @@ void FullKeyboard::keyHandler()
             chr = presskey+32;
         QKeyEvent keyPress(QEvent::KeyPress, presskey, modifier, QString(chr));
         QWidget* w = QApplication::focusWidget();
-        QApplication::sendEvent(w, &keyPress);
-        if (m_shiftActivated)
-            processShift();
+        if (w)
+        {
+            QApplication::sendEvent(w, &keyPress);
+            if (m_shiftActivated)
+                processShift();
+        }
     }
 }
