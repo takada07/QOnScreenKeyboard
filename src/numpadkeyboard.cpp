@@ -37,6 +37,7 @@ void NumpadKeyboard::keyHandler()
     printf("%d\n",presskey);
     QKeyEvent keyPress(QEvent::KeyPress, presskey, Qt::NoModifier, QString(chr));
     QWidget* w = QApplication::focusWidget();
-    QApplication::sendEvent(w, &keyPress);
+    if (w)
+        QApplication::sendEvent(w, &keyPress);
 }
 
