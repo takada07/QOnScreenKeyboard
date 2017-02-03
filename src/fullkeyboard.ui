@@ -935,7 +935,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="2,4,2,2,0,0,2,0,2,2,4,2">
+       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="2,4,2,2,2,2,2,2,2,2,4,2">
         <property name="spacing">
          <number>2</number>
         </property>
