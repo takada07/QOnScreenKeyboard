@@ -22,7 +22,7 @@ public:
     explicit QOnScreenKeyboard(QWidget* parent=0, QOnScreenKeyboard::KeyboardType kbdType=QOnScreenKeyboard::Full);
 
     void setReceiver(QWidget* receiver);
-    QWidget* receiver();
+    QWidget* receiver() const;
 };
 
 %End

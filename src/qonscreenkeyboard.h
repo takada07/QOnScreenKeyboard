@@ -26,7 +26,7 @@ public:
     QOnScreenKeyboard(QWidget* parent=0, KeyboardType kbdType=Full);
 
     void setReceiver(QWidget* receiver);
-    QWidget* receiver();
+    QWidget* receiver() const;
 
 private:
     KeyboardType m_kbdType;

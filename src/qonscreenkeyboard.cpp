@@ -29,7 +29,7 @@ void QOnScreenKeyboard::setReceiver(QWidget* receiver)
     m_pKeyboard->setReceiver(receiver);
 }
 
-QWidget* QOnScreenKeyboard::receiver()
+QWidget* QOnScreenKeyboard::receiver() const
 {
     return m_pKeyboard->receiver();
 }

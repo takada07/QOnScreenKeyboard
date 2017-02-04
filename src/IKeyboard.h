@@ -11,7 +11,7 @@ class IKeyboard : public QWidget
             QWidget(parent){}
 
         void setReceiver(QWidget* receiver) { mReceiver = receiver; }
-        QWidget* receiver() { return mReceiver; }
+        QWidget* receiver() const { return mReceiver; }
 
     protected:
         QPointer<QWidget> mReceiver;
