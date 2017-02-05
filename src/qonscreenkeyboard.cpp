@@ -24,3 +24,13 @@ QOnScreenKeyboard::QOnScreenKeyboard(QWidget *parent, KeyboardType kbdType):
 
 }
 
+void QOnScreenKeyboard::setReceiver(QWidget* receiver)
+{
+    m_pKeyboard->setReceiver(receiver);
+}
+
+QWidget* QOnScreenKeyboard::receiver() const
+{
+    return m_pKeyboard->receiver();
+}
+

@@ -208,7 +208,7 @@ void FullKeyboard::keyHandler()
         if ((presskey >= 65) && (presskey <= 90) && (!m_shiftActivated) && (!m_capsActivated))
             chr = presskey+32;
         QKeyEvent keyPress(QEvent::KeyPress, presskey, modifier, QString(chr));
-        QWidget* w = QApplication::focusWidget();
+        QWidget* w = mReceiver.isNull() ? QApplication::focusWidget() : mReceiver.data();
         if (w)
         {
             QApplication::sendEvent(w, &keyPress);
